@@ -24,6 +24,7 @@ function user_list_drush_command() {
       'drush user-list --status=blocked' => 'Displays a list of blocked users.',
     ),
     'core' => array(6, 7),
+    'aliases' => array('uls'),
   );
 
   return $items;
