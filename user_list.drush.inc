@@ -153,8 +153,9 @@ function drush_user_list() {
         }
       }
     }
-  // SELECT ur.uid,ur.rid,r.name,u.name,u.mail,u.status FROM users u LEFT JOIN users_roles ur ON u.uid=ur.uid LEFT JOIN role r ON r.rid=ur.rid WHERE r.rid IN $rids
+    // SELECT ur.uid,ur.rid,r.name,u.name,u.mail,u.status FROM users u LEFT JOIN users_roles ur ON u.uid=ur.uid LEFT JOIN role r ON r.rid=ur.rid WHERE r.rid IN $rids
     $query = db_select('users', 'u');
+    // Yo dawg, I herd you like JOINs. But we do this here, once, so we don't load unnecessary user objects later.
     $query->join('users_roles', 'ur', 'u.uid = ur.uid');
     $query->join('role', 'r', 'r.rid = ur.rid');
     $query->fields('u', array('uid'));
@@ -170,14 +171,13 @@ function drush_user_list() {
     while ($record = $result->fetchAssoc()) {
       $uids[] = $record['uid'];
     }
-      // This will return an array of user objects
+    // This will return an array of user objects.
     $users = user_load_multiple($uids);
     foreach ($users as $user) {
       $user_roles = implode(', ', $user->roles);
-      // If $user->status = 1, set it to "Active"; otherwise, "Blocked". I hate this shorthand but it works
+      // If $user->status = 1, set it to "Active"; otherwise, "Blocked". I hate this shorthand but it works.
       $user_status = ($user->status) ? 'Active' : 'Blocked';
-
-
+      // Build the array for each row.
       $user_row = array(
         $user->uid,
         $user->name,
