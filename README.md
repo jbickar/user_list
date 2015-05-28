@@ -1,8 +1,9 @@
 # User List
-Drush plugin to provide a user-list command
+Drush plugin to provide a `user-list` command
 
-Stolen shamelessly from https://www.drupal.org/node/1199080
+# To Use
+1. Download and place in your `~/.drush/` directory
+2. Run `drush user-list` to list all users on a site
+3. Optionally, use the `--roles` and `--status` options
 
-# To-Do
-* Port functionality to Drupal 7 (currently Drupal 6 only)
-* Improve performance (egads it's slow)
+Credit to [Manuel Garcia](https://www.drupal.org/u/manuel-garcia) for the initial Drupal 6 implementation in [https://www.drupal.org/node/1199080](https://www.drupal.org/node/1199080)
