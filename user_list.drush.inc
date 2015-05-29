@@ -3,7 +3,6 @@
 /**
  * @file
  * Adds a drush command to list users.
- *
  */
 
 /**
