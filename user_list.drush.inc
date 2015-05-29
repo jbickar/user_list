@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Adds a drush command to list users.
  */
 
@@ -63,6 +62,11 @@ function drush_user_list() {
     }
   }
 
+  // Build the table. This format is the same for both Drupal 6 and 7.
+  $header = array('UID', dt('Name'), dt('Email'), dt('Roles'), dt('Status'));
+  $rows = array();
+  $rows[] = $header;
+
   $major_version = drush_drupal_major_version();
   if ($major_version == 6) {
     // Get the RIDs of the users with the roles specified.
@@ -99,10 +103,6 @@ function drush_user_list() {
     // Get all UIDs.
     $query = drush_db_select('users', $user_fields, $where, $args);
 
-    // Build the table.
-    $header = array('UID', dt('Name'), dt('Email'), dt('Roles'), dt('Status'));
-    $rows[] = $header;
-
     // Load each users info and add it to the results table.
     while ($user = drush_db_fetch_object($query)) {
       if ($user->uid == '0') {
@@ -133,16 +133,11 @@ function drush_user_list() {
       );
       $rows[] = $user_row;
     }
-    drush_print_table($rows, TRUE);
   }
   elseif ($major_version == 7) {
-    // Build the table.
-    $header = array('UID', dt('Name'), dt('Email'), dt('Roles'), dt('Status'));
-    $rows = array();
-    $rows[] = $header;
     if (!empty($roles)) {
       $rids = array();
-      foreach ($roles as $role){
+      foreach ($roles as $role) {
         // Look up rid.
         $role_object = user_role_load_by_name($role);
         if (!$role_object) {
@@ -153,9 +148,12 @@ function drush_user_list() {
         }
       }
     }
-    // SELECT ur.uid,ur.rid,r.name,u.name,u.mail,u.status FROM users u LEFT JOIN users_roles ur ON u.uid=ur.uid LEFT JOIN role r ON r.rid=ur.rid WHERE r.rid IN $rids.
+    // SELECT ur.uid,ur.rid,r.name,u.name,u.mail,u.status FROM users u
+    // LEFT JOIN users_roles ur ON u.uid=ur.uid
+    // LEFT JOIN role r ON r.rid=ur.rid WHERE r.rid IN $rids.
     $query = db_select('users', 'u');
-    // Yo dawg, I herd you like JOINs. But we do this here, once, so we don't load unnecessary user objects later.
+    // Yo dawg, I herd you like JOINs. But we do this here, once, so we don't
+    // load unnecessary user objects later.
     $query->join('users_roles', 'ur', 'u.uid = ur.uid');
     $query->join('role', 'r', 'r.rid = ur.rid');
     $query->fields('u', array('uid'));
@@ -175,7 +173,8 @@ function drush_user_list() {
     $users = user_load_multiple($uids);
     foreach ($users as $user) {
       $user_roles = implode(', ', $user->roles);
-      // If $user->status = 1, set it to "Active"; otherwise, "Blocked". I hate this shorthand but it works.
+      // If $user->status = 1, set it to "Active"; otherwise, "Blocked".
+      // I hate this shorthand but it works.
       $user_status = ($user->status) ? 'Active' : 'Blocked';
       // Build the array for each row.
       $user_row = array(
@@ -187,7 +186,9 @@ function drush_user_list() {
       );
       $rows[] = $user_row;
     }
-    drush_print_table($rows, TRUE);
-
   }
+
+  // Print the table for both Drupal 6 and 7.
+  drush_print_table($rows, TRUE);
+
 }
