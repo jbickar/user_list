@@ -2,13 +2,15 @@
 
 /**
  * @file
+ *
  * Adds a drush command to list users.
+ *
  */
 
 
- /**
-  * Implements hook_drush_command().
-  */
+/**
+ * Implements hook_drush_command().
+ */
 function user_list_drush_command() {
 
   $items['user-list'] = array(
@@ -29,9 +31,9 @@ function user_list_drush_command() {
   return $items;
 }
 
- /**
-  * Displays a list of users.
-  */
+/**
+ * Displays a list of users.
+ */
 function drush_user_list() {
   // Get options passed.
   $roles = _convert_csv_to_array(drush_get_option('roles'));
