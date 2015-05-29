@@ -2,11 +2,9 @@
 
 /**
  * @file
- *
  * Adds a drush command to list users.
  *
  */
-
 
 /**
  * Implements hook_drush_command().
