@@ -54,8 +54,11 @@ function drush_user_list() {
     if ($status == 'active') {
       $st = '1';
     }
-    if ($status == 'blocked') {
+    elseif ($status == 'blocked') {
       $st = '0';
+    }
+    else {
+      drush_log(dt('You have entered an invalid status. Valid status options are "active" and "blocked. Listing both active and blocked users.'), 'error');
     }
     if (isset($st)) {
       $where = "status = %d";
@@ -141,7 +144,7 @@ function drush_user_list() {
         // Look up rid.
         $role_object = user_role_load_by_name($role);
         if (!$role_object) {
-          drupal_set_message(t('No role exists with the name "@role"', array('@role' => $role)), 'error');
+          drush_log(dt('No role exists with the name "@role"', array('@role' => $role)), 'error');
         }
         else {
           $rids[] = $role_object->rid;
@@ -158,10 +161,10 @@ function drush_user_list() {
     $query->join('role', 'r', 'r.rid = ur.rid');
     $query->fields('u', array('uid'));
     $query->fields('u');
-    if (!empty($roles)) {
+    if (!empty($rids)) {
       $query->condition('r.rid', $rids, "IN");
     }
-    if (!empty($status)) {
+    if (!empty($st)) {
       $query->condition('u.status', $st, "=");
     }
     $result = $query->execute();
@@ -188,7 +191,14 @@ function drush_user_list() {
     }
   }
 
-  // Print the table for both Drupal 6 and 7.
-  drush_print_table($rows, TRUE);
+  drush_log(print_r($rows));
+  // If we have at least one row other than the header, print the table.
+  if (!empty($rows[1])) {
+    // Print the table for both Drupal 6 and 7.
+    drush_print_table($rows, TRUE);
+  }
+  else {
+    drush_log(dt('There are no users to display, which is odd.'), 'ok');
+  }
 
 }
