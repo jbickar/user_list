@@ -190,7 +190,6 @@ function drush_user_list() {
     }
   }
 
-  drush_log(print_r($rows));
   // If we have at least one row other than the header, print the table.
   if (!empty($rows[1])) {
     // Print the table for both Drupal 6 and 7.
