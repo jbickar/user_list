@@ -14,7 +14,7 @@ function user_list_drush_command() {
     'description' => 'Display a list of users.',
     'aliases' => array('uls'),
     'options' => array(
-      'roles' => 'A comma sepparated list of roles to filter by',
+      'roles' => 'A comma-separated list of roles to filter by',
       'status' => 'Filter by status of the account. Can be active or blocked',
     ),
     'examples' => array(
