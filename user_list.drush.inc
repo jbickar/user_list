@@ -34,7 +34,7 @@ function user_list_drush_command() {
 function drush_user_list() {
   // Get options passed.
   $roles = _convert_csv_to_array(drush_get_option('roles'));
-  $status = drush_get_option('status');
+  $status = st(drupal_strtolower(drush_get_option('status')));
 
   // The fields to grab from the users tables.
   $user_fields = array(
@@ -57,6 +57,7 @@ function drush_user_list() {
       $st = '0';
     }
     else {
+      unset($st);
       drush_log(dt('You have entered an invalid status. Valid status options are "active" and "blocked. Listing both active and blocked users.'), 'error');
     }
     if (isset($st)) {
@@ -163,7 +164,7 @@ function drush_user_list() {
     if (!empty($rids)) {
       $query->condition('r.rid', $rids, "IN");
     }
-    if (!empty($st)) {
+    if (isset($st)) {
       $query->condition('u.status', $st, "=");
     }
     $result = $query->execute();
