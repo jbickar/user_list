@@ -34,7 +34,7 @@ function user_list_drush_command() {
 function drush_user_list() {
   // Get options passed.
   $roles = _convert_csv_to_array(drush_get_option('roles'));
-  $status = st(drupal_strtolower(drush_get_option('status')));
+  $status = t(drupal_strtolower(drush_get_option('status')));
 
   // The fields to grab from the users tables.
   $user_fields = array(
