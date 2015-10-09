@@ -34,7 +34,7 @@ function user_list_drush_command() {
 function drush_user_list() {
   // Get options passed.
   $roles = _convert_csv_to_array(drush_get_option('roles'));
-  $status = t(drupal_strtolower(drush_get_option('status')));
+  $status = check_plain(strtolower(drush_get_option('status')));
 
   // The fields to grab from the users tables.
   $user_fields = array(
@@ -164,7 +164,10 @@ function drush_user_list() {
     if (!empty($rids)) {
       $query->condition('r.rid', $rids, "IN");
     }
-    if (isset($st)) {
+    // The only valid statuses are 1 and 0.
+    // empty() is not our friend here.
+    $valid_status = array("1","0");
+    if (in_array($st, $valid_status)) {
       $query->condition('u.status', $st, "=");
     }
     $result = $query->execute();
