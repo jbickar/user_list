@@ -23,6 +23,12 @@ function user_list_drush_command() {
     ),
     'core' => array(6, 7),
     'aliases' => array('uls'),
+    'outputformat' => array(
+      'default' => 'table',
+      'pipe-format' => 'list',
+      'field-labels' => array('uid' => 'UID', 'name' => dt('Name'), 'email' => dt('Email'), 'roles' => dt('Roles'), 'status' => dt('Status')),
+      'output-data-type' => 'format-table',
+    ),
   );
 
   return $items;
@@ -66,9 +72,7 @@ function drush_user_list() {
   }
 
   // Build the table. This format is the same for both Drupal 6 and 7.
-  $header = array('UID', dt('Name'), dt('Email'), dt('Roles'), dt('Status'));
   $rows = array();
-  $rows[] = $header;
 
   $major_version = drush_drupal_major_version();
   if ($major_version == 6) {
@@ -128,11 +132,11 @@ function drush_user_list() {
       $user_roles = implode(', ', $user_roles);
 
       $user_row = array(
-        $user->uid,
-        $user->name,
-        $user->mail,
-        $user_roles,
-        $user_status,
+        'uid' => $user->uid,
+        'name' => $user->name,
+        'email' => $user->mail,
+        'roles' => $user_roles,
+        'status' => $user_status,
       );
       $rows[] = $user_row;
     }
@@ -184,11 +188,11 @@ function drush_user_list() {
       $user_status = ($user->status) ? 'Active' : 'Blocked';
       // Build the array for each row.
       $user_row = array(
-        $user->uid,
-        $user->name,
-        $user->mail,
-        $user_roles,
-        $user_status,
+        'uid' => $user->uid,
+        'name' => $user->name,
+        'email' => $user->mail,
+        'roles' => $user_roles,
+        'status' => $user_status,
       );
       $rows[] = $user_row;
     }
@@ -196,8 +200,7 @@ function drush_user_list() {
 
   // If we have at least one row other than the header, print the table.
   if (!empty($rows[1])) {
-    // Print the table for both Drupal 6 and 7.
-    drush_print_table($rows, TRUE);
+    return $rows;
   }
   else {
     drush_log(dt('There are no users to display, which is odd.'), 'ok');
